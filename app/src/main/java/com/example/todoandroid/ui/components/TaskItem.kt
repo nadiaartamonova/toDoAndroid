@@ -1,19 +1,23 @@
 package com.example.todoandroid.ui.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.todoandroid.model.Task
+import com.example.todoandroid.ui.theme.*
 
 @Composable
 fun TaskItem(
@@ -22,37 +26,71 @@ fun TaskItem(
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row (
+    val animatedTextColor: Color by animateColorAsState(
+        targetValue = if (task.done) TaskDoneRed else TaskTextNormal,
+        label = "taskTextColor"
+    )
+
+    Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ){
-        Checkbox(
-            checked = task.done,
-            onCheckedChange = onToggleDone
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .border(1.dp, TaskCardBorder, RoundedCornerShape(16.dp))
+            .heightIn(min = 72.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+        containerColor = TaskCardBackground
         )
-
-        Spacer(Modifier.width(12.dp))
-
-        Column (
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = task.text,
-                style = MaterialTheme.typography.bodyLarge,
-                textDecoration = if (task.done) TextDecoration.LineThrough else TextDecoration.None
+    ) {
+        Row (
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Checkbox(
+                checked = task.done,
+                onCheckedChange = onToggleDone,
+                colors = CheckboxDefaults.colors(
+                    checkedColor = if (task.done) CheckboxDone else CheckboxNormal,
+                    uncheckedColor = CheckboxNormal
+                )
             )
-            task.date?.let { d ->
-                Spacer(Modifier.height(2.dp))
+
+            Spacer(Modifier.width(12.dp))
+
+            Column (
+                modifier = Modifier.weight(1f)
+            ) {
                 Text(
-                    text = d,
-                    style = MaterialTheme.typography.bodySmall
+                    text = task.text,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = animatedTextColor,
+                    textDecoration = if (task.done) TextDecoration.LineThrough else TextDecoration.None
+                )
+                task.date?.let { d ->
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        text = d,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+            IconButton(onClick = onDelete) {
+                val deleteIconColor = if (task.done)
+                    TaskDoneRed
+                else
+                    TopBarText
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = "Delete Task",
+                    tint = deleteIconColor
                 )
             }
-        }
-        IconButton(onClick = onDelete) {
-            Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete Task")
         }
     }
 }
