@@ -35,6 +35,8 @@ fun ListScreen(
             )
         )
     }
+    var editingId by remember { mutableStateOf<String?>(null) }
+
     Scaffold (
         topBar = {
             CenterAlignedTopAppBar(
@@ -69,10 +71,21 @@ fun ListScreen(
                 items(tasks, key = {it.id}) { task ->
                     TaskItem(
                         task = task,
+                        isEditing = (editingId == task.id),
                         onToggleDone = { checked ->
                             tasks = tasks.map{
                                 if (it.id == task.id) it.copy(done = checked) else it
                             }
+                        },
+                        onEditClick = {
+                            editingId = task.id
+                        },
+                        onSaveEdit = { newText ->
+                            tasks = tasks.map { if (it.id == task.id) it.copy(text = newText.trim()) else it }
+                            editingId = null
+                        },
+                        onCancelEdit = {
+                            editingId = null
                         },
                         onDelete = {
                             tasks = tasks.filter { it.id != task.id }
