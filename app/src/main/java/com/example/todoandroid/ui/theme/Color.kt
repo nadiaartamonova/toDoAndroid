@@ -17,6 +17,7 @@ val TaskCardBorder = Color(0xFFB2DFDB)
 
 val TopBarBackground = Color(0xFFB2DFDB)
 val TopBarText = Color(0xFF004D40)
+val SecondButtonBackground = Color(0xFF005f67 )
 
 val TaskTextNormal = Color(0xFF1B5E20)
 val TaskDoneRed = Color(0xFFC62828)
