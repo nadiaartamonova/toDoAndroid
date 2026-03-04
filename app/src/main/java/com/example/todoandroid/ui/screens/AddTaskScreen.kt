@@ -91,7 +91,7 @@ fun AddTaskScreen(
                     dateError = when {
                         formatted.isBlank() -> null
                         formatted.length < 10 -> "Format: DD.MM.YYYY"
-                        !isValidDdMmYyyy(formatted) -> null
+                        !isValidDdMmYyyy(formatted) -> "Invalid date"
                         !isNotPastDdMmYyyy(formatted) -> "Date can’t be in the past"
                         else -> null
                     }
