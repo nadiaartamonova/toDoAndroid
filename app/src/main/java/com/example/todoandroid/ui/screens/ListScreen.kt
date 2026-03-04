@@ -22,17 +22,12 @@ import com.example.todoandroid.ui.theme.*
 @Composable
 fun ListScreen(
     modifier: Modifier,
-    onCreateClick: () -> Unit
+    tasks: List<Task>,
+    onCreateClick: () -> Unit,
+    onToggleDone: (taskId: String, checked: Boolean) -> Unit,
+    onSaveEdit: (taskId: String, newText: String) -> Unit,
+    onDelete: (taskId: String) -> Unit
 ) {
-    var tasks by remember {
-        mutableStateOf(
-            listOf(
-                Task(id = "1", text = "Buy milk", date = "2026-03-01"),
-                Task(id = "2", text = "Finish Android assignment", date = "2026-03-01"),
-                Task(id = "3", text = "Ride motorcycle", done = true)
-            )
-        )
-    }
     var editingId by remember { mutableStateOf<String?>(null) }
 
     Scaffold (
@@ -58,22 +53,20 @@ fun ListScreen(
                         task = task,
                         isEditing = (editingId == task.id),
                         onToggleDone = { checked ->
-                            tasks = tasks.map{
-                                if (it.id == task.id) it.copy(done = checked) else it
-                            }
+                            onToggleDone(task.id, checked)
                         },
                         onEditClick = {
                             editingId = task.id
                         },
                         onSaveEdit = { newText ->
-                            tasks = tasks.map { if (it.id == task.id) it.copy(text = newText.trim()) else it }
+                            onSaveEdit(task.id, newText)
                             editingId = null
                         },
                         onCancelEdit = {
                             editingId = null
                         },
                         onDelete = {
-                            tasks = tasks.filter { it.id != task.id }
+                            onDelete(task.id)
                         }
                     )
                 }
