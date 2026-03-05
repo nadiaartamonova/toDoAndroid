@@ -13,12 +13,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.todoandroid.ui.screens.AddTaskScreen
 import com.example.todoandroid.ui.screens.ListScreen
 import com.example.todoandroid.ui.theme.ToDoAndroidTheme
-import java.util.UUID
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import com.example.todoandroid.model.Task
+import com.example.todoandroid.viewmodel.TaskViewModel
+import com.example.todoandroid.data.TaskStorage
+import androidx.compose.ui.platform.LocalContext
+
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -28,56 +27,23 @@ class MainActivity : ComponentActivity() {
         setContent {
             ToDoAndroidTheme {
                 val navController = rememberNavController()
-                var tasks by remember {
-                    mutableStateOf(
-                        listOf(
-                            Task(id = "1", text = "Buy milk", date = "2026-03-01"),
-                            Task(id = "2", text = "Finish Android assignment", date = "2026-03-01"),
-                            Task(id = "3", text = "Ride motorcycle", done = true)
-                        )
-                    )
-                }
+                val context = LocalContext.current
+                val taskStorage = remember { TaskStorage(context.applicationContext) }
+                val viewModel = remember { TaskViewModel(taskStorage) }
 
-                NavHost(
-                    navController =navController,
-                    startDestination = "list"
-                ) {
+                NavHost(navController = navController, startDestination = "list") {
                     composable("list") {
                         ListScreen(
-                            tasks = tasks,
-                            onCreateClick = {
-                                navController.navigate("add")
-                            },
                             modifier = Modifier,
-                            onToggleDone = { taskId, checked ->
-                                tasks = tasks.map {
-                                    if (it.id == taskId) it.copy(done = checked) else it
-                                }
-                            },
-                            onSaveEdit = { taskId, newText ->
-                                tasks = tasks.map {
-                                    if (it.id == taskId) it.copy(text = newText.trim()) else it
-                                }
-                            },
-                            onDelete = { taskId ->
-                                tasks = tasks.filter { it.id != taskId }
-                            }
+                            viewModel = viewModel,
+                            onCreateClick = { navController.navigate("add") }
                         )
                     }
                     composable("add") {
                         AddTaskScreen(
-                            onSave = { taskText, dateText ->
-                                val newTask = Task(
-                                    id = UUID.randomUUID().toString(),
-                                    text = taskText.trim(),
-                                    date = dateText?.takeIf { it.isNotBlank() }
-                                )
-                                tasks = tasks + newTask
-                                navController.popBackStack()
-                            },
-                            onCancel = {
-                                navController.popBackStack()
-                            }
+                            viewModel = viewModel,
+                            onCancel = { navController.popBackStack() },
+                            onSaved = { navController.popBackStack() }
                         )
                     }
                 }

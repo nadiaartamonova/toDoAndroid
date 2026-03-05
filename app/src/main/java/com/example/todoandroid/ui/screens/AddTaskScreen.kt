@@ -21,13 +21,17 @@ import com.example.todoandroid.ui.theme.TaskCardBorder
 import com.example.todoandroid.ui.theme.TaskTextNormal
 import com.example.todoandroid.ui.theme.TopBarBackground
 import java.time.LocalDate
+import com.example.todoandroid.viewmodel.TaskViewModel
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTaskScreen(
-    onSave: (String, String?) -> Unit,
-    onCancel: () -> Unit
+    viewModel: TaskViewModel,
+    onCancel: () -> Unit,
+    onSaved: () -> Unit
 ) {
     var taskText by remember { mutableStateOf("") }
     var dateText by remember { mutableStateOf("") }
@@ -54,7 +58,8 @@ fun AddTaskScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             OutlinedTextField(
@@ -129,16 +134,19 @@ fun AddTaskScreen(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
             )
-            Spacer(modifier = Modifier.weight(1f))
+            //Spacer(modifier = Modifier.weight(1f))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 32.dp),
+                    .padding(top = 8.dp, bottom = 16.dp),
             ) {
                 AppPrimaryButton(
                     text = "Save",
-                    onClick = { onSave(taskText, dateText) },
+                    onClick = {
+                        viewModel.addTask(taskText, dateText)
+                        onSaved()
+                    },
                     enabled = canSave,
                     modifier = Modifier.weight(1f)
                 )
