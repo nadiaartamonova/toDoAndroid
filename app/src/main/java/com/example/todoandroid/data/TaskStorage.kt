@@ -1,53 +1,24 @@
-package com.example.todoandroid.viewmodel
+package com.example.todoandroid.data
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
-import com.example.todoandroid.data.TaskStorage
+import android.content.Context
 import com.example.todoandroid.model.Task
-import java.util.UUID
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
-class TaskViewModel(
-    private val storage: TaskStorage
-) : ViewModel() {
+class TaskStorage(context: Context) {
+    private val prefs = context.getSharedPreferences("tasks_prefs", Context.MODE_PRIVATE)
+    private val gson = Gson()
+    private val key = "tasks_json"
 
-    var tasks by mutableStateOf(storage.loadTasks())
-        private set
-
-    init {
-        if (tasks.isEmpty()) {
-            tasks = listOf(
-                Task(id = "1", text = "Buy milk", date = "2026-03-01"),
-                Task(id = "2", text = "Finish Android assignment", date = "2026-03-01"),
-                Task(id = "3", text = "Ride motorcycle", done = true)
-            )
-            storage.saveTasks(tasks)
-        }
+    fun saveTasks(tasks: List<Task>) {
+        val json = gson.toJson(tasks)
+        prefs.edit().putString(key, json).apply()
     }
 
-    fun addTask(text: String, date: String?) {
-        val newTask = Task(
-            id = UUID.randomUUID().toString(),
-            text = text.trim(),
-            date = date?.takeIf { it.isNotBlank() }
-        )
-        tasks = tasks + newTask
-        storage.saveTasks(tasks)
-    }
-
-    fun toggleDone(taskId: String, checked: Boolean) {
-        tasks = tasks.map { if (it.id == taskId) it.copy(done = checked) else it }
-        storage.saveTasks(tasks)
-    }
-
-    fun editTask(taskId: String, newText: String) {
-        tasks = tasks.map { if (it.id == taskId) it.copy(text = newText.trim()) else it }
-        storage.saveTasks(tasks)
-    }
-
-    fun deleteTask(taskId: String) {
-        tasks = tasks.filter { it.id != taskId }
-        storage.saveTasks(tasks)
+    fun loadTasks(): List<Task> {
+        val json = prefs.getString(key, null) ?: return emptyList()
+        val type = object : TypeToken<List<Task>>() {}.type
+        return runCatching { gson.fromJson<List<Task>>(json, type) }.getOrDefault(emptyList())
     }
 }
+

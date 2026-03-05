@@ -22,19 +22,19 @@ import com.example.todoandroid.ui.components.AppPrimaryButton
 import com.example.todoandroid.ui.components.AppTopBar
 import com.example.todoandroid.ui.components.TaskItem
 import com.example.todoandroid.ui.theme.*
+import com.example.todoandroid.viewmodel.TaskViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListScreen(
     modifier: Modifier,
-    tasks: List<Task>,
-    onCreateClick: () -> Unit,
-    onToggleDone: (taskId: String, checked: Boolean) -> Unit,
-    onSaveEdit: (taskId: String, newText: String) -> Unit,
-    onDelete: (taskId: String) -> Unit
+    viewModel: TaskViewModel,
+    onCreateClick: () -> Unit
 ) {
     var editingId by remember { mutableStateOf<String?>(null) }
+    val tasks = viewModel.tasks
+
 
     Scaffold (
         topBar = {
@@ -55,24 +55,25 @@ fun ListScreen(
                 contentPadding = PaddingValues(vertical = 12.dp)
             ){
                 items(tasks, key = {it.id}) { task ->
+
                     TaskItem(
                         task = task,
                         isEditing = (editingId == task.id),
                         onToggleDone = { checked ->
-                            onToggleDone(task.id, checked)
+                            viewModel.toggleDone(task.id, checked)
                         },
                         onEditClick = {
                             editingId = task.id
                         },
                         onSaveEdit = { newText ->
-                            onSaveEdit(task.id, newText)
+                            viewModel.editTask(task.id, newText)
                             editingId = null
                         },
                         onCancelEdit = {
                             editingId = null
                         },
                         onDelete = {
-                            onDelete(task.id)
+                            viewModel.deleteTask(task.id)
                         }
                     )
                 }

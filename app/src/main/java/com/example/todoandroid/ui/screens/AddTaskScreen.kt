@@ -21,13 +21,15 @@ import com.example.todoandroid.ui.theme.TaskCardBorder
 import com.example.todoandroid.ui.theme.TaskTextNormal
 import com.example.todoandroid.ui.theme.TopBarBackground
 import java.time.LocalDate
+import com.example.todoandroid.viewmodel.TaskViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTaskScreen(
-    onSave: (String, String?) -> Unit,
-    onCancel: () -> Unit
+    viewModel: TaskViewModel,
+    onCancel: () -> Unit,
+    onSaved: () -> Unit
 ) {
     var taskText by remember { mutableStateOf("") }
     var dateText by remember { mutableStateOf("") }
@@ -138,7 +140,10 @@ fun AddTaskScreen(
             ) {
                 AppPrimaryButton(
                     text = "Save",
-                    onClick = { onSave(taskText, dateText) },
+                    onClick = {
+                        viewModel.addTask(taskText, dateText)
+                        onSaved()
+                    },
                     enabled = canSave,
                     modifier = Modifier.weight(1f)
                 )
