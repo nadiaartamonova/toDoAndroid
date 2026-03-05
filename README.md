@@ -52,4 +52,13 @@ Rakendus on loodud kasutades:
 
 ## Ekraanipildid
 
+### Task list screen
 ![Task list](screenshots/TaskScreen.png)
+### Add Task Form
+![Task list](screenshots/AddTaskForm.png)
+### Add Task Screen
+![Task list](screenshots/AddTaskScreen.png)
+### Edit Task
+![Task list](screenshots/EditTask.png)
+### Completed Task
+![Task list](screenshots/CompletedTask.png)
