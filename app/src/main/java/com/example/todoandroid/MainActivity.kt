@@ -19,6 +19,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.todoandroid.model.Task
+import com.example.todoandroid.viewmodel.TaskViewModel
+import com.example.todoandroid.data.TaskStorage
+import androidx.compose.ui.platform.LocalContext
+
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -37,42 +41,36 @@ class MainActivity : ComponentActivity() {
                         )
                     )
                 }
-
+                val context = LocalContext.current
+                val taskStorage = remember { TaskStorage(context) }
+                val viewModel = remember { TaskViewModel(taskStorage) }
                 NavHost(
                     navController =navController,
                     startDestination = "list"
                 ) {
                     composable("list") {
+
                         ListScreen(
-                            tasks = tasks,
+                            tasks = viewModel.tasks,
                             onCreateClick = {
                                 navController.navigate("add")
                             },
                             modifier = Modifier,
                             onToggleDone = { taskId, checked ->
-                                tasks = tasks.map {
-                                    if (it.id == taskId) it.copy(done = checked) else it
-                                }
-                            },
+                                viewModel.toggleDone(taskId, checked)
+                                           },
                             onSaveEdit = { taskId, newText ->
-                                tasks = tasks.map {
-                                    if (it.id == taskId) it.copy(text = newText.trim()) else it
-                                }
+                                viewModel.editTask(taskId, newText)
                             },
                             onDelete = { taskId ->
-                                tasks = tasks.filter { it.id != taskId }
+                                viewModel.deleteTask(taskId)
                             }
                         )
                     }
                     composable("add") {
                         AddTaskScreen(
                             onSave = { taskText, dateText ->
-                                val newTask = Task(
-                                    id = UUID.randomUUID().toString(),
-                                    text = taskText.trim(),
-                                    date = dateText?.takeIf { it.isNotBlank() }
-                                )
-                                tasks = tasks + newTask
+                                viewModel.addTask(taskText, dateText)
                                 navController.popBackStack()
                             },
                             onCancel = {
