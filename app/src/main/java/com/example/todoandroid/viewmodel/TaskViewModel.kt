@@ -14,18 +14,6 @@ class TaskViewModel(
 
     var tasks by mutableStateOf(storage.loadTasks())
         private set
-
-    init {
-        if (tasks.isEmpty()) {
-            tasks = listOf(
-                Task(id = "1", text = "Buy milk", date = "2026-03-01"),
-                Task(id = "2", text = "Finish Android assignment", date = "2026-03-01"),
-                Task(id = "3", text = "Ride motorcycle", done = true)
-            )
-            storage.saveTasks(tasks)
-        }
-    }
-
     fun addTask(text: String, date: String?) {
         val newTask = Task(
             id = UUID.randomUUID().toString(),
