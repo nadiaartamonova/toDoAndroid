@@ -44,6 +44,7 @@ Rakendus on loodud kasutades:
 - kasutajaliidese (UI) disain
 - ekraanide loomine Jetpack Compose abil
 - komponentide ja stiilide loomine
+- CRUD loogika (add / edit / delete / toggle)
 
 **Nadia Artamonova**
 - ülesannete oleku haldus (state management)
@@ -80,3 +81,40 @@ Kui kasutaja märgib ülesande tehtuks, muutub selle olek.
 Ülesanne kuvatakse läbikriipsutatud tekstiga ning märgitakse punase värviga.
 
 ![Task list](screenshots/CompletedTask.png)
+
+## GitHub workflow
+
+Arendus toimus ainult feature-harudes, `main` hoiti stabiilsena.
+Kõik muudatused liideti `main` harusse ainult Pull Request'ide kaudu.
+
+### Pull Requestid
+
+| PR | Branch | Peamine sisu | Autor
+|---|---|---|---|
+| #1 | `feature-ui-list-screen` | Task list ekraan, task item UI, edit/delete/toogle done tegevused | Jekatenina |
+| #2 | `feature-ui-add-task-screen` | Add Task ekraan, kuupäeva valideerimine, taaskasutatavad nupud | Jekatenina |
+| #3 | `feature-add-task-state` | Task state ja CRUD loogika | Nadezda |
+| #4 | `feature-storage-sharedprefs` | SharedPreferences JSON salvestus/laadimine, ViewModel refactor | Nadezda |
+
+### Code review
+
+Iga PR sai review-kommentaare enne merge'i.
+Vajadusel tehti parandused samas harus ja alles seejärel merge.
+
+## Testing
+
+Automaatseid teste ei lisatud.
+Projekt testiti käsitsi Android emulaatoris.
+
+### Manual test cases
+
+- [x] Rakendus käivitub Android Studios/emulaatoris.
+- [x] Uue ülesande lisamine töötab.
+- [x] Ülesannete nimekiri kuvatakse korrektselt.
+- [x] `Done` staatuse muutmine (checkbox) töötab.
+- [x] Ülesande kustutamine töötab.
+- [x] Ülesande muutmine (inline edit) töötab.
+- [x] Horisontaalrežiimis (landscape) paigutus jääb kasutatavaks.
+- [x] Pikkadel ekraanidel/vormidel töötab vertikaalne kerimine (scroll).
+- [x] Andmed säilivad pärast äpi sulgemist/uuesti avamist (SharedPreferences).
+
