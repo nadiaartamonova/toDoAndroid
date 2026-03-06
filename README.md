@@ -29,7 +29,7 @@ Rakendus on loodud kasutades:
 - **Navigation Compose**
 - **Material 3**
 - **Android Studio**
-- lokaalne salvestus **JSON** formaadis
+- **SharedPreferences** (JSON storage)
 
 ## Kuidas rakendust käivitada
 
@@ -53,12 +53,30 @@ Rakendus on loodud kasutades:
 ## Ekraanipildid
 
 ### Task list screen
+Sellel ekraanil kuvatakse kõik ülesanded.  
+
+Kasutaja saab märkida ülesande tehtuks, seda muuta või kustutada.
+
 ![Task list](screenshots/TaskScreen.png)
 ### Add Task Form
+Sellel vormil saab kasutaja lisada uue ülesande ning soovi korral määrata kuupäeva.
+
 ![Task list](screenshots/AddTaskForm.png)
 ### Add Task Screen
+Sellel ekraanil kasutaja juba sisestas uue ülesande pealkirja ning kuupäeva.  
+
+Ülesanne salvestatakse pärast nupu **Save** vajutamist.
+
 ![Task list](screenshots/AddTaskScreen.png)
 ### Edit Task
+Kasutaja saab olemasolevat ülesannet muuta otse nimekirjas.  
+
+Muudatuse kinnitamiseks kasutatakse linnukese nuppu ning tühistamiseks ristiga nuppu.
+
 ![Task list](screenshots/EditTask.png)
 ### Completed Task
+Kui kasutaja märgib ülesande tehtuks, muutub selle olek.  
+
+Ülesanne kuvatakse läbikriipsutatud tekstiga ning märgitakse punase värviga.
+
 ![Task list](screenshots/CompletedTask.png)
