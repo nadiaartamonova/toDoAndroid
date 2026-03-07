@@ -118,3 +118,7 @@ Projekt testiti käsitsi Android emulaatoris.
 - [x] Pikkadel ekraanidel/vormidel töötab vertikaalne kerimine (scroll).
 - [x] Andmed säilivad pärast äpi sulgemist/uuesti avamist (SharedPreferences).
 
+## Video Demo
+
+[![Watch the demo](screenshots/list_screen.png)](https://youtube.com/shorts/IgDSrtqNEXE?feature=share)
+
